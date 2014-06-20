@@ -1,0 +1,106 @@
+import Asserts;
+import Main;
+import File;
+import FileSystem;
+import FilePath;
+import Argv;
+import ArgvMock;
+import ArgvStubber;
+import FileMock;
+import FileStubber;
+import FileVerifier;
+import FileSystemMock;
+import FileSystemStubber;
+import FilePathStubber;
+import FilePathMock;
+import PrinterMock;
+import PrinterVerifier;
+import MockProvider;
+import When;
+import Printer;
+import MockTracker;
+import ArgumentWatcher;
+
+every MainTest is:
+
+	needs MockProvider mocks;
+
+	with FileMock? input = nothing;
+	with $PrinterMock? = nothing;
+
+	provides Main,
+		FileSystem <- {
+			var FileSystemMock <- mocks;
+
+			var FileMock <- mocks;
+			input = FileMock;
+			var FilePathMock <- mocks;
+
+			mocks.when(FilePathMock).getBasename().thenReturn('input.wk').thenReturn('input.wk'); //hack
+
+			mocks.when(FileMock).eof().thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
+				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
+				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
+				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
+				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false); // hack
+			mocks.when(FileSystemMock).getPath("src/input.wk").thenReturn((cast FilePath) FilePathMock);
+			(When{File} <- FilePathMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock); // hack
+			return FileSystemMock;
+		},
+		Argv <- {
+			var ArgvMock <- mocks;
+			var Text[] = [];
+			Text[].push("the executable name goes here");
+			Text[].push("src/input.wk");
+			Text[].push("bin/waketable");
+			mocks.when(ArgvMock).getArgv().thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]); // hack
+			return ArgvMock;
+		},
+		Printer <- {
+			var PrinterMock <- mocks;
+			$PrinterMock = PrinterMock;
+			return PrinterMock;
+		};
+
+	~[ test imports become dependencies ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main <- this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		mocks.when(FileMock).read(1)
+			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ').thenReturn('T').thenReturn('e').thenReturn('s').thenReturn('t').thenReturn(';').thenReturn('\n')
+			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ').thenReturn('B').thenReturn('l').thenReturn('a').thenReturn('h').thenReturn(';').thenReturn('\n')
+			.thenReturn('\n')
+			.thenReturn('e').thenReturn('v').thenReturn('e').thenReturn('r').thenReturn('y').thenReturn(' ').thenReturn('\n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("bin/wakeobj/input.o: bin/waketable/Test.table.md5 bin/waketable/Blah.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("bin/waketable/input.table: bin/waketable/Test.table.md5 bin/waketable/Blah.table.md5");
+		}}
+	}
+
+	~[ test mock imports are added to mocks variable ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main <- this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		mocks.when(FileMock).read(1)
+			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ')
+				.thenReturn('T').thenReturn('e').thenReturn('s').thenReturn('t').thenReturn('M').thenReturn('o').thenReturn('c').thenReturn('k').thenReturn(';').thenReturn('\n')
+			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ')
+				.thenReturn('B').thenReturn('l').thenReturn('a').thenReturn('h').thenReturn('M').thenReturn('o').thenReturn('c').thenReturn('k').thenReturn(';').thenReturn('\n')
+			.thenReturn('\n')
+			.thenReturn('e').thenReturn('v').thenReturn('e').thenReturn('r').thenReturn('y').thenReturn(' ').thenReturn('\n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/TestMock.table.md5 bin/waketable/BlahMock.table.md5");
+		}}
+	}

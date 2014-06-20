@@ -1,0 +1,43 @@
+import FileSystem;
+import FilePath;
+import File;
+import Argv;
+import Printer;
+
+every Main is:
+
+	needs FileSystem, Argv, Printer;
+
+	main() {
+		var FilePath = FileSystem.getPath(Argv.getArgv()[1]);
+		var File <- FilePath;
+		var Text deps = '';
+		var Text mocks = '';
+
+		while(!File.eof()) {
+			var Text = readLine(File);
+			if(Text.substr(0, 5) == "every") break;
+			if(Text.substr(0, 1) == "#") continue;
+			if(Text == "") continue;
+			var classname Text = Text.substr(7, -1);
+			if(classname.substr(-4) == "Mock") mocks += ' ' + Argv.getArgv()[2] + '/' + classname + '.table.md5';
+			deps += ' ' + Argv.getArgv()[2] + '/' + classname + '.table.md5';
+		}
+
+		Printer.printLine('bin/wakeobj/' + FilePath.getBasename().substr(0, -3) + ".o:" + deps);
+		Printer.printLine(Argv.getArgv()[2] + '/' + FilePath.getBasename().substr(0, -3) + ".table:" + deps);
+		Printer.printLine('MOCKS := $(MOCKS)' + mocks);
+	}
+
+	Text -- readLine(File) {
+		var Text = "";
+		var $Text = "";
+
+		while(!File.eof()) {
+			$Text = File.read(1);
+			if($Text == '\n') break;
+			Text += $Text;
+		}
+
+		return Text;
+	}
