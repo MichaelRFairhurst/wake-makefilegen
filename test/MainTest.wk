@@ -50,6 +50,7 @@ every MainTest is:
 		Argv <- {
 			var ArgvMock <- mocks;
 			var Text[] = [];
+			Text[].push("node goes here");
 			Text[].push("the executable name goes here");
 			Text[].push("src/input.wk");
 			Text[].push("bin/waketable");
