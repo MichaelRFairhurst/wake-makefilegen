@@ -10,12 +10,12 @@ every Main is:
 
 	main() {
 		var FilePath = FileSystem.getPath(Argv.getArgv()[2]);
-		var File <- FilePath;
+		var File from FilePath;
 		var Text deps = '';
 		var Text mocks = '';
 
 		while(!File.eof()) {
-			var Text = readLine(File);
+			var Text = readLine(File) + "";
 			if(Text.substr(0, 5) == "every") break;
 			if(Text.substr(0, 1) == "#") continue;
 			if(Text == "") continue;
@@ -24,8 +24,8 @@ every Main is:
 			deps += ' ' + Argv.getArgv()[3] + '/' + classname + '.table.md5';
 		}
 
-		Printer.printLine('bin/wakeobj/' + FilePath.getBasename().substr(0, -3) + ".o:" + deps);
-		Printer.printLine(Argv.getArgv()[3] + '/' + FilePath.getBasename().substr(0, -3) + ".table:" + deps);
+		Printer.printLine('bin/wakeobj/' + (FilePath.getBasename() + "").substr(0, -3) + ".o:" + deps);
+		Printer.printLine(Argv.getArgv()[3] + '/' + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
 		Printer.printLine('MOCKS := $(MOCKS)' + mocks);
 	}
 

@@ -30,42 +30,42 @@ every MainTest is:
 
 	provides Main,
 		FileSystem <- {
-			var FileSystemMock <- mocks;
+			var FileSystemMock from mocks;
 
-			var FileMock <- mocks;
+			var FileMock from mocks;
 			input = FileMock;
-			var FilePathMock <- mocks;
+			var FilePathMock from mocks;
 
-			mocks.when(FilePathMock).getBasename().thenReturn('input.wk').thenReturn('input.wk'); //hack
+			mocks.when(FilePathMock).getBasename().thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk'); //hack
 
 			mocks.when(FileMock).eof().thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
 				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
 				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
 				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
 				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false); // hack
-			mocks.when(FileSystemMock).getPath("src/input.wk").thenReturn((cast FilePath) FilePathMock);
-			(When{File} <- FilePathMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock); // hack
+			mocks.when(FileSystemMock).getPath("src/input.wk").thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock);
+			(When{File} from FilePathMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock); // hack
 			return FileSystemMock;
 		},
 		Argv <- {
-			var ArgvMock <- mocks;
+			var ArgvMock from mocks;
 			var Text[] = [];
 			Text[].push("node goes here");
 			Text[].push("the executable name goes here");
 			Text[].push("src/input.wk");
 			Text[].push("bin/waketable");
-			mocks.when(ArgvMock).getArgv().thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]); // hack
+			mocks.when(ArgvMock).getArgv().thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]); // hack
 			return ArgvMock;
 		},
 		Printer <- {
-			var PrinterMock <- mocks;
+			var PrinterMock from mocks;
 			$PrinterMock = PrinterMock;
 			return PrinterMock;
 		};
 
 	~[ test imports become dependencies ]~(Asserts) {
 		mocks.use(Asserts);
-		var Main <- this;
+		var Main from this;
 
 		var FileMock? = input; //hack
 		var PrinterMock? = $PrinterMock; //hack
@@ -86,7 +86,7 @@ every MainTest is:
 
 	~[ test mock imports are added to mocks variable ]~(Asserts) {
 		mocks.use(Asserts);
-		var Main <- this;
+		var Main from this;
 
 		var FileMock? = input; //hack
 		var PrinterMock? = $PrinterMock; //hack
