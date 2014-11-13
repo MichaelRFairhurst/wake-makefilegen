@@ -21,6 +21,7 @@ import Printer;
 import MockTracker;
 import ArgumentWatcher;
 
+@TestClass
 every MainTest is:
 
 	needs MockProvider mocks;
@@ -63,6 +64,7 @@ every MainTest is:
 			return PrinterMock;
 		};
 
+	@Test
 	~[ test imports become dependencies ]~(Asserts) {
 		mocks.use(Asserts);
 		var Main from this;
@@ -84,6 +86,7 @@ every MainTest is:
 		}}
 	}
 
+	@Test
 	~[ test mock imports are added to mocks variable ]~(Asserts) {
 		mocks.use(Asserts);
 		var Main from this;
