@@ -24,38 +24,44 @@ import ArgumentWatcher;
 @TestClass
 every MainTest is:
 
-	needs MockProvider mocks;
+	needs MockProvider mocks, Printer;
 
 	with FileMock? input = nothing;
 	with $PrinterMock? = nothing;
 
-	provides Main,
-		FileSystem <- {
+	provides
+		Main <- Main(?FileSystem, ?Argv, Printer),
+		Main <- (Text srcpath, Text tablepath) {
+			return Main((FileSystem(srcpath) from this), (Argv(srcpath, tablepath) from this)) from this;
+		},
+		Main <- {
+			return Main("src/input.wk", "bin/waketable") from this;
+		},
+		Main:inmodule <- {
+			return Main("src/some.module.name/input.wk", "bin/waketable") from this;
+		},
+		FileSystem <- (Text srcpath) {
 			var FileSystemMock from mocks;
 
 			var FileMock from mocks;
 			input = FileMock;
 			var FilePathMock from mocks;
 
-			mocks.when(FilePathMock).getBasename().thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk'); //hack
+			mocks.when(FilePathMock).getBasename().thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk').thenReturn('input.wk');
 
-			mocks.when(FileMock).eof().thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
-				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
-				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
-				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
-				.thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false); // hack
-			mocks.when(FileSystemMock).getPath("src/input.wk").thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock);
-			(When{File} from FilePathMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock); // hack
+			mocks.when(FileMock).eof().thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false);
+			mocks.when(FileSystemMock).getPath(srcpath).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock).thenReturn((cast FilePath) FilePathMock);
+			(When{File} from FilePathMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock).thenReturn((cast File) FileMock);
 			return FileSystemMock;
 		},
-		Argv <- {
+		Argv <- (Text srcpath, Text tablepath) {
 			var ArgvMock from mocks;
 			var Text[] = [];
 			Text[].push("node goes here");
 			Text[].push("the executable name goes here");
-			Text[].push("src/input.wk");
-			Text[].push("bin/waketable");
-			mocks.when(ArgvMock).getArgv().thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]); // hack
+			Text[].push(srcpath);
+			Text[].push(tablepath);
+			mocks.when(ArgvMock).getArgv().thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]).thenReturn(Text[]);
 			return ArgvMock;
 		},
 		Printer <- {
@@ -73,16 +79,48 @@ every MainTest is:
 		var PrinterMock? = $PrinterMock; //hack
 		if FileMock exists {
 		if PrinterMock exists {
-		mocks.when(FileMock).read(1)
-			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ').thenReturn('T').thenReturn('e').thenReturn('s').thenReturn('t').thenReturn(';').thenReturn('\n')
-			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ').thenReturn('B').thenReturn('l').thenReturn('a').thenReturn('h').thenReturn(';').thenReturn('\n')
-			.thenReturn('\n')
-			.thenReturn('e').thenReturn('v').thenReturn('e').thenReturn('r').thenReturn('y').thenReturn(' ').thenReturn('\n');
+		setupFileReturns(mocks.when(FileMock).read(1), 'import Test;\nimport Blah;\n\nevery \n');
 
 		Main.main();
 
 		mocks.verify(1)Times(PrinterMock).printLine("bin/wakeobj/input.o: bin/waketable/Test.table.md5 bin/waketable/Blah.table.md5");
 		mocks.verify(1)Times(PrinterMock).printLine("bin/waketable/input.table: bin/waketable/Test.table.md5 bin/waketable/Blah.table.md5");
+		}}
+	}
+
+	@Test
+	~[ test imports in-module dependencies ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main from this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		setupFileReturns(mocks.when(FileMock).read(1), 'import some.module.Test;\nimport other.module.with.Blah;\n\nevery \n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("bin/wakeobj/input.o: bin/waketable/some.module/Test.table.md5 bin/waketable/other.module.with/Blah.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("bin/waketable/input.table: bin/waketable/some.module/Test.table.md5 bin/waketable/other.module.with/Blah.table.md5");
+		}}
+	}
+
+	@Test
+	~[ test class in module generates proper paths for deps ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main:inmodule from this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		setupFileReturns(mocks.when(FileMock).read(1), 'module some.module.name;\nimport some.module.Test;\nimport other.module.with.Blah;\n\nevery \n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("bin/wakeobj/some.module.name/input.o: bin/waketable/some.module/Test.table.md5 bin/waketable/other.module.with/Blah.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("bin/waketable/some.module.name/input.table: bin/waketable/some.module/Test.table.md5 bin/waketable/other.module.with/Blah.table.md5");
 		}}
 	}
 
@@ -95,16 +133,53 @@ every MainTest is:
 		var PrinterMock? = $PrinterMock; //hack
 		if FileMock exists {
 		if PrinterMock exists {
-		mocks.when(FileMock).read(1)
-			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ')
-				.thenReturn('T').thenReturn('e').thenReturn('s').thenReturn('t').thenReturn('M').thenReturn('o').thenReturn('c').thenReturn('k').thenReturn(';').thenReturn('\n')
-			.thenReturn('i').thenReturn('m').thenReturn('p').thenReturn('o').thenReturn('r').thenReturn('t').thenReturn(' ')
-				.thenReturn('B').thenReturn('l').thenReturn('a').thenReturn('h').thenReturn('M').thenReturn('o').thenReturn('c').thenReturn('k').thenReturn(';').thenReturn('\n')
-			.thenReturn('\n')
-			.thenReturn('e').thenReturn('v').thenReturn('e').thenReturn('r').thenReturn('y').thenReturn(' ').thenReturn('\n');
+		setupFileReturns(mocks.when(FileMock).read(1), 'import mocks.generated.TestMock;\nimport mocks.generated.BlahMock;\n\nevery \n');
 
 		Main.main();
 
-		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/TestMock.table.md5 bin/waketable/BlahMock.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/mocks.generated/TestMock.table.md5 bin/waketable/mocks.generated/BlahMock.table.md5");
 		}}
+	}
+
+	@Test
+	~[ test classname that ends with mock isn't a mock if its not in the right module ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main from this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		setupFileReturns(mocks.when(FileMock).read(1), 'import wrong.module.TestMock;\nimport also.wrong.module.BlahMock;\n\nevery \n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS)");
+		}}
+	}
+
+	@Test
+	~[ test mock imports within subpackage are added to mocks variable ]~(Asserts) {
+		mocks.use(Asserts);
+		var Main from this;
+
+		var FileMock? = input; //hack
+		var PrinterMock? = $PrinterMock; //hack
+		if FileMock exists {
+		if PrinterMock exists {
+		setupFileReturns(mocks.when(FileMock).read(1), 'import mocks.generated.nested.module.TestMock;\nimport mocks.generated.different.nested.module.BlahMock;\n\nevery \n');
+
+		Main.main();
+
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/mocks.generated.nested.module/TestMock.table.md5 bin/waketable/mocks.generated.different.nested.module/BlahMock.table.md5");
+		}}
+	}
+
+	setupFileReturns(When{Text}, Text) {
+		for(var Num = 0; Num < Text.getSize(); Num += 1) {
+			var $Text? = Text.charAt(Num);
+			if $Text exists {
+				When.thenReturn($Text);
+			}
+		}
 	}

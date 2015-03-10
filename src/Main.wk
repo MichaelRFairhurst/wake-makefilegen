@@ -13,20 +13,35 @@ every Main is:
 		var File from FilePath;
 		var Text deps = '';
 		var Text mocks = '';
+		var Text classmoduledir = '';
 
 		while(!File.eof()) {
 			var Text = readLine(File) + "";
+			if(Text.substr(0, 6) == "module") {
+				classmoduledir = Text.substr(7, -1) + "/";
+				continue;
+			}
 			if(Text.substr(0, 5) == "every") break;
 			if(Text.substr(0, 1) == "#") continue;
 			if(Text.substr(0, 1) == "@") continue;
 			if(Text == "") continue;
 			var classname Text = Text.substr(7, -1);
-			if(classname.substr(-4) == "Mock") mocks += ' ' + Argv.getArgv()[3] + '/' + classname + '.table.md5';
-			deps += ' ' + Argv.getArgv()[3] + '/' + classname + '.table.md5';
+
+			var Text[] moduleparts = classname.split(".");
+
+			var depmoduledir Text = "";
+			if(moduleparts.getSize() > 1) {
+				classname = moduleparts[moduleparts.getSize() - 1];
+				//moduleparts.pop(); // shed classname
+				depmoduledir = '.'.join(moduleparts).substr(0, -1 - classname.getSize()) + "/";
+			}
+
+			if(classname.substr(-4) == "Mock" && depmoduledir.substr(0, 15) == 'mocks.generated') mocks += ' ' + Argv.getArgv()[3] + '/' + depmoduledir + classname + '.table.md5';
+			deps += ' ' + Argv.getArgv()[3] + '/' + depmoduledir + classname + '.table.md5';
 		}
 
-		Printer.printLine('bin/wakeobj/' + (FilePath.getBasename() + "").substr(0, -3) + ".o:" + deps);
-		Printer.printLine(Argv.getArgv()[3] + '/' + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
+		Printer.printLine('bin/wakeobj/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".o:" + deps);
+		Printer.printLine(Argv.getArgv()[3] + '/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
 		Printer.printLine('MOCKS := $(MOCKS)' + mocks);
 	}
 
