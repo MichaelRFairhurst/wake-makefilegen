@@ -1,8 +1,8 @@
-import FileSystem;
-import FilePath;
-import File;
-import Argv;
-import Printer;
+import std.Argv;
+import io.FileSystem;
+import io.FilePath;
+import io.File;
+import io.Printer;
 
 every Main is:
 
@@ -14,6 +14,7 @@ every Main is:
 		var Text deps = '';
 		var Text mocks = '';
 		var Text classmoduledir = '';
+		var Text tabledir = Argv.getArgv()[3];
 
 		while(!File.eof()) {
 			var Text = readLine(File) + "";
@@ -36,12 +37,15 @@ every Main is:
 				depmoduledir = '.'.join(moduleparts).substr(0, -1 - classname.getSize()) + "/";
 			}
 
-			if(classname.substr(-4) == "Mock" && depmoduledir.substr(0, 15) == 'mocks.generated') mocks += ' ' + Argv.getArgv()[3] + '/' + depmoduledir + classname + '.table.md5';
-			deps += ' ' + Argv.getArgv()[3] + '/' + depmoduledir + classname + '.table.md5';
+			if(classname.substr(-4) == "Mock" && depmoduledir.substr(0, 8) == 'wkto.gen') {
+				mocks += ' ' + tabledir + '/' + depmoduledir + classname + '.table.md5';
+			}
+
+			deps += ' ' + tabledir + '/' + depmoduledir + classname + '.table.md5';
 		}
 
 		Printer.printLine('bin/wakeobj/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".o:" + deps);
-		Printer.printLine(Argv.getArgv()[3] + '/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
+		Printer.printLine(tabledir + '/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
 		Printer.printLine('MOCKS := $(MOCKS)' + mocks);
 	}
 

@@ -1,25 +1,25 @@
-import Asserts;
+import wunit.Asserts;
 import Main;
-import File;
-import FileSystem;
-import FilePath;
-import Argv;
-import ArgvMock;
-import ArgvStubber;
-import FileMock;
-import FileStubber;
-import FileVerifier;
-import FileSystemMock;
-import FileSystemStubber;
-import FilePathStubber;
-import FilePathMock;
-import PrinterMock;
-import PrinterVerifier;
-import MockProvider;
-import When;
-import Printer;
-import MockTracker;
-import ArgumentWatcher;
+import io.File;
+import io.FileSystem;
+import io.FilePath;
+import std.Argv;
+import wkto.gen.std.ArgvMock;
+import wkto.gen.std.ArgvStubber;
+import wkto.gen.io.FileMock;
+import wkto.gen.io.FileStubber;
+import wkto.gen.io.FileVerifier;
+import wkto.gen.io.FileSystemMock;
+import wkto.gen.io.FileSystemStubber;
+import wkto.gen.io.FilePathStubber;
+import wkto.gen.io.FilePathMock;
+import wkto.gen.io.PrinterMock;
+import wkto.gen.io.PrinterVerifier;
+import wkto.gen.MockProvider;
+import wkto.When;
+import io.Printer;
+import wkto.MockTracker;
+import wkto.ArgumentWatcher;
 
 @TestClass
 every MainTest is:
