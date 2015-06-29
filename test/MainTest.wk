@@ -133,11 +133,11 @@ every MainTest is:
 		var PrinterMock? = $PrinterMock; //hack
 		if FileMock exists {
 		if PrinterMock exists {
-		setupFileReturns(mocks.when(FileMock).read(1), 'import mocks.generated.TestMock;\nimport mocks.generated.BlahMock;\n\nevery \n');
+		setupFileReturns(mocks.when(FileMock).read(1), 'import wkto.gen.TestMock;\nimport wkto.gen.BlahMock;\n\nevery \n');
 
 		Main.main();
 
-		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/mocks.generated/TestMock.table.md5 bin/waketable/mocks.generated/BlahMock.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/wkto.gen/TestMock.table.md5 bin/waketable/wkto.gen/BlahMock.table.md5");
 		}}
 	}
 
@@ -167,11 +167,11 @@ every MainTest is:
 		var PrinterMock? = $PrinterMock; //hack
 		if FileMock exists {
 		if PrinterMock exists {
-		setupFileReturns(mocks.when(FileMock).read(1), 'import mocks.generated.nested.module.TestMock;\nimport mocks.generated.different.nested.module.BlahMock;\n\nevery \n');
+		setupFileReturns(mocks.when(FileMock).read(1), 'import wkto.gen.nested.module.TestMock;\nimport wkto.gen.different.nested.module.BlahMock;\n\nevery \n');
 
 		Main.main();
 
-		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/mocks.generated.nested.module/TestMock.table.md5 bin/waketable/mocks.generated.different.nested.module/BlahMock.table.md5");
+		mocks.verify(1)Times(PrinterMock).printLine("MOCKS := $(MOCKS) bin/waketable/wkto.gen.nested.module/TestMock.table.md5 bin/waketable/wkto.gen.different.nested.module/BlahMock.table.md5");
 		}}
 	}
 
