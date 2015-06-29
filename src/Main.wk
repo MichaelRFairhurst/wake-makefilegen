@@ -16,28 +16,28 @@ every Main is:
 		var Text classmoduledir = '';
 		var Text tabledir = Argv.getArgv()[3];
 
-		while(!File.eof()) {
+		while !File.eof() {
 			var Text = readLine(File) + "";
-			if(Text.substr(0, 6) == "module") {
+			if Text.substr(0, 6) == "module" {
 				classmoduledir = Text.substr(7, -1) + "/";
 				continue;
 			}
-			if(Text.substr(0, 5) == "every") break;
-			if(Text.substr(0, 1) == "#") continue;
-			if(Text.substr(0, 1) == "@") continue;
-			if(Text == "") continue;
+			if Text.substr(0, 5) == "every" then break;
+			if Text.substr(0, 1) == "#" then continue;
+			if Text.substr(0, 1) == "@" then continue;
+			if Text == "" then continue;
 			var classname Text = Text.substr(7, -1);
 
 			var Text[] moduleparts = classname.split(".");
 
 			var depmoduledir Text = "";
-			if(moduleparts.getSize() > 1) {
+			if moduleparts.getSize() > 1 {
 				classname = moduleparts[moduleparts.getSize() - 1];
 				//moduleparts.pop(); // shed classname
 				depmoduledir = '.'.join(moduleparts).substr(0, -1 - classname.getSize()) + "/";
 			}
 
-			if(classname.substr(-4) == "Mock" && depmoduledir.substr(0, 8) == 'wkto.gen') {
+			if classname.substr(-4) == "Mock" && depmoduledir.substr(0, 8) == 'wkto.gen' {
 				mocks += ' ' + tabledir + '/' + depmoduledir + classname + '.table.md5';
 			}
 
@@ -53,9 +53,9 @@ every Main is:
 		var Text = "";
 		var $Text = "";
 
-		while(!File.eof()) {
+		while !File.eof() {
 			$Text = File.read(1);
-			if($Text == '\n') break;
+			if $Text == '\n' then break;
 			Text += $Text;
 		}
 
