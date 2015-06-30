@@ -11,10 +11,10 @@ every Main is:
 	main() {
 		var FilePath = FileSystem.getPath(Argv.getArgv()[2]);
 		var File from FilePath;
-		var Text deps = '';
-		var Text mocks = '';
-		var Text classmoduledir = '';
-		var Text tabledir = Argv.getArgv()[3];
+		var deps = '';
+		var mocks = '';
+		var classmoduledir = '';
+		var tabledir = Argv.getArgv()[3];
 
 		while !File.eof() {
 			var Text = readLine(File) + "";
@@ -26,11 +26,11 @@ every Main is:
 			if Text.substr(0, 1) == "#" then continue;
 			if Text.substr(0, 1) == "@" then continue;
 			if Text == "" then continue;
-			var classname Text = Text.substr(7, -1);
+			var classname = Text.substr(7, -1);
 
-			var Text[] moduleparts = classname.split(".");
+			var moduleparts = classname.split(".");
 
-			var depmoduledir Text = "";
+			var depmoduledir = "";
 			if moduleparts.getSize() > 1 {
 				classname = moduleparts[moduleparts.getSize() - 1];
 				//moduleparts.pop(); // shed classname
