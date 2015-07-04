@@ -23,8 +23,8 @@ every Main is:
 				continue;
 			}
 			if Text.substr(0, 5) == "every" then break;
-			if Text.substr(0, 1) == "#" then continue;
-			if Text.substr(0, 1) == "@" then continue;
+			if Text.charAt(0) == "#" then continue;
+			if Text.charAt(0) == "@" then continue;
 			if Text == "" then continue;
 			var classname = Text.substr(7, -1);
 
@@ -55,7 +55,7 @@ every Main is:
 
 		while !File.eof() {
 			$Text = File.read(1);
-			if $Text == '\n' then break;
+			if $Text == '\n's then break;
 			Text += $Text;
 		}
 
