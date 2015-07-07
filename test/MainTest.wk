@@ -176,8 +176,8 @@ every MainTest is:
 	}
 
 	setupFileReturns(When{Text}, Text) {
-		for(var Num = 0; Num < Text.getSize(); Num += 1) {
-			var $Text? = Text.charAt(Num).?toText();
+		for(var Int = 0; Int < Text.getSize(); Int += 1) {
+			var $Text? = Text.charAt(Int).?toText();
 			if $Text exists {
 				When.thenReturn($Text);
 			}
