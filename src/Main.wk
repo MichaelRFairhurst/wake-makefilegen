@@ -41,7 +41,7 @@ every Main is:
 				}
 
 				if deprecursive {
-					recursiveDeps.push(srcdir + "/" + depmoduledir + depclassname + ".wk");
+					recursiveDeps.push(srcdir + "/" + depmoduledir + depclassname + "%wk");
 				} else {
 					deps.push(basePath + '.table');
 				}
