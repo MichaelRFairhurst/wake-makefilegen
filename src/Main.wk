@@ -1,4 +1,5 @@
 import std.Argv;
+import std.System;
 import io.FileSystem;
 import io.FilePath;
 import io.File;
@@ -6,18 +7,91 @@ import io.Printer;
 
 every Main is:
 
-	needs FileSystem, Argv, Printer;
+	needs FileSystem, Argv, Printer, System;
 
 	main() {
 		var FilePath = FileSystem.getPath(Argv.getArgv()[2]);
-		var File from FilePath;
-		var deps = '';
-		var mocks = '';
-		var classmoduledir = '';
-		var tabledir = Argv.getArgv()[3];
 
+		//var File from FilePath;
+		var Text[] deps = [];
+		var Text[] recursiveDeps = [];
+		var mocks = '';
+		var tabledir = Argv.getArgv()[3];
+		var srcdir = Argv.getArgv()[4];
+
+		System.execAsync("wake -e -d " + tabledir + " " + FilePath.getPath(), { stdout ->
+			var lines = stdout.split(\n);
+
+			foreach line in lines {
+				if line == "" {
+					continue;
+				}
+
+				var Text[] = line.split(',');
+
+				var depmodule = Text[0];
+				var depclassname = Text[1];
+				var deprecursive = (Text[2] == "TRUE");
+
+				var depmoduledir = depmodule + "/" if depmodule != "" else "";
+				var basePath = tabledir + '/' + depmoduledir + depclassname;
+
+				if depclassname.substr(-4) == "Mock" && depmoduledir.substr(0, 8) == 'wkto.gen' {
+					mocks += ' ' + basePath + ".table.md5";
+				}
+
+				if deprecursive {
+					recursiveDeps.push(srcdir + "/" + depmoduledir + depclassname + ".wk");
+				} else {
+					deps.push(basePath + '%table.md5');
+				}
+			}
+
+
+			var buildObjSegment = getBuildObjSegment(FilePath.getPath(), srcdir);
+			Printer.printLine('MOCKS := $(MOCKS)' + mocks);
+
+			if(recursiveDeps.getSize()) {
+				recursiveDeps.push(FilePath.getPath());
+
+				Printer.print("ifeq (");
+				foreach recursiveDeps {
+					Printer.print("$(_MULTI_COMPILE_" + getClassname(Text, srcdir).toUpper() + ")");
+				}
+
+				Printer.printLine(",)");
+
+				foreach recursiveDeps {
+					Printer.printLine("_MULTI_COMPILE_" + getClassname(Text, srcdir).toUpper() + "=DEFINED");
+				}
+
+				foreach recursiveDeps {
+					Printer.print(tabledir + "/" + getBuildObjSegment(Text, srcdir) + "%table bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + "%o ");
+				}
+
+				Printer.printLine(": " + ' '.join(recursiveDeps) + ' ' + ' '.join(deps));
+				Printer.print(\t + '$(WAKE) -d $(TABLEDIR) ');
+
+				foreach recursiveDeps {
+					Printer.print(srcdir + "/" + getBuildObjSegment(Text, srcdir) + ".wk ");
+				}
+
+				Printer.print('-o');
+
+				foreach recursiveDeps {
+					Printer.print(" bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + ".o");
+				}
+
+				Printer.print(\n);
+				Printer.printLine("endif");
+			} else {
+				Printer.printLine('bin/wakeobj/' + buildObjSegment + "%o " + tabledir + '/' + buildObjSegment + "%table : " + srcdir + "/" + buildObjSegment + "%wk " + ' '.join(deps));
+				Printer.printLine(\t + '$(WAKE) -d $(TABLEDIR) $< -o bin/wakeobj/' + buildObjSegment + '.o');
+			}
+		});
+
+		#>
 		while !File.eof() {
-			var Text = readLine(File) + "";
 			if Text.substr(0, 6) == "module" {
 				classmoduledir = Text.substr(7, -1) + "/";
 				continue;
@@ -43,21 +117,30 @@ every Main is:
 
 			deps += ' ' + tabledir + '/' + depmoduledir + classname + '.table.md5';
 		}
-
-		Printer.printLine('bin/wakeobj/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".o:" + deps);
-		Printer.printLine(tabledir + '/' + classmoduledir + (FilePath.getBasename() + "").substr(0, -3) + ".table:" + deps);
-		Printer.printLine('MOCKS := $(MOCKS)' + mocks);
+		##
 	}
 
+	Text -- getBuildObjSegment(Text, Text srcdir) {
+		return Text.substr(srcdir.getSize() + 1).substr(0, -3);
+	}
+
+	Text -- getClassname(Text, Text srcdir) {
+		var nosrcdir = Text.substr(srcdir.getSize() + 1);
+		var parts = nosrcdir.split('/');
+		return parts[parts.getSize() - 1].substr(0, -3);
+	}
+
+	#>
 	Text -- readLine(File) {
 		var Text = "";
 		var $Text = "";
 
 		while !File.eof() {
 			$Text = File.read(1);
-			if $Text == '\n's then break;
+			if $Text == \n then break;
 			Text += $Text;
 		}
 
 		return Text;
 	}
+	##
