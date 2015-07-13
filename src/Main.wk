@@ -38,14 +38,14 @@ every Main is:
 
 				if depclassname.substr(-4) == "Mock" && depmoduledir.substr(0, 8) == 'wkto.gen' {
 					// DO NOT USE %.md5 or make won't match %.md5:% for this table file ever again!!
-					mocks += ' ' + basePath + ".table.md5";
+					mocks += ' ' + basePath + ".table";
 				}
 
 				if deprecursive {
 					recursiveDeps.push(srcdir + "/" + depmoduledir + depclassname + ".wk");
 				} else {
 					// DO NOT USE %.md5 or make won't match %.md5:% for this table file ever again!!
-					deps.push(basePath + '.table.md5');
+					deps.push(basePath + '.table');
 				}
 			}
 
@@ -68,7 +68,7 @@ every Main is:
 				}
 
 				foreach recursiveDeps {
-					Printer.print(tabledir + "/" + getBuildObjSegment(Text, srcdir) + "%table bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + "%o ");
+					Printer.print(tabledir + "/" + getBuildObjSegment(Text, srcdir) + ".table bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + "%o ");
 				}
 
 				Printer.printLine(": " + ' '.join(recursiveDeps) + ' ' + ' '.join(deps));
