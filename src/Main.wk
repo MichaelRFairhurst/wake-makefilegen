@@ -68,7 +68,7 @@ every Main is:
 				}
 
 				foreach recursiveDeps {
-					Printer.print(tabledir + "/" + getBuildObjSegment(Text, srcdir) + ".table bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + "%o ");
+					Printer.print(tabledir + "/" + getBuildObjSegment(Text, srcdir) + "%table bin/wakeobj/" + getBuildObjSegment(Text, srcdir) + "%o ");
 				}
 
 				Printer.printLine(": " + ' '.join(recursiveDeps) + ' ' + ' '.join(deps));
